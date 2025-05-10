@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Strength Shop</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid #27ae60;
+            color: #27ae60;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature h3 {
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .cta-buttons {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>Welcome to Strength Shop</h1>
+        <p>Your one-stop destination for premium fitness equipment and supplements. Transform your fitness journey with our curated selection of high-quality products.</p>
+        <div class="cta-buttons">
+            <a href="index.html" class="btn btn-primary">Browse Products</a>
+            <a href="login.html" class="btn btn-secondary">Sign In</a>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <h3>Premium Equipment</h3>
+            <p>High-quality fitness equipment for every level of training</p>
+        </div>
+        <div class="feature">
+            <h3>Expert Support</h3>
+            <p>Get guidance from fitness professionals</p>
+        </div>
+        <div class="feature">
+            <h3>Fast Delivery</h3>
+            <p>Quick and reliable shipping to your doorstep</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Strength Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html> 

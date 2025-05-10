@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Strength Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --background-color: #f8f9fa;
+            --text-color: #2c3e50;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .checkout-form, .cart-summary {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .cart-summary {
+            height: fit-content;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #34495e;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .error {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            background-color: rgba(231, 76, 60, 0.1);
+            display: none;
+        }
+
+        .success {
+            color: #27ae60;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            background-color: rgba(39, 174, 96, 0.1);
+            display: none;
+        }
+
+        .test-card-info {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .test-card-info code {
+            background-color: #e9ecef;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .payment-methods {
+            margin: 2rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .payment-method {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--accent-color);
+        }
+
+        .payment-method.selected {
+            border-color: var(--accent-color);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .payment-method img {
+            height: 24px;
+            margin-right: 1rem;
+            vertical-align: middle;
+        }
+
+        .paypal-button {
+            background-color: #0070ba;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .paypal-button:hover {
+            background-color: #005ea6;
+        }
+
+        .paypal-button img {
+            height: 20px;
+        }
+
+        .paypal-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .paypal-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .paypal-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .paypal-modal-header h3 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .paypal-modal-body {
+            margin-bottom: 1rem;
+        }
+
+        .paypal-modal-footer {
+            text-align: right;
+        }
+
+        .paypal-modal-footer button {
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="checkout-form">
+            <div class="test-card-info">
+                <p>For testing purposes:</p>
+                <p>Card Number: <code>4242 4242 4242 4242</code></p>
+                <p>Expiry: Any future date</p>
+                <p>CVC: Any 3 digits</p>
+                <p>ZIP: Any 5 digits</p>
+            </div>
+            <h2>Payment Information</h2>
+            <div class="payment-methods">
+                <div class="payment-method selected" onclick="selectPaymentMethod('card')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" alt="Credit Card">
+                    Credit Card
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('paypal')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174861.png" alt="PayPal">
+                    PayPal
+                </div>
+            </div>
+            <form id="checkoutForm">
+                <div id="cardPaymentForm">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" name="cardNumber" placeholder="4242 4242 4242 4242" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry">Expiry Date</label>
+                            <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvc">CVC</label>
+                            <input type="text" id="cvc" name="cvc" placeholder="123" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">ZIP Code</label>
+                        <input type="text" id="zipCode" name="zipCode" placeholder="12345" required>
+                    </div>
+                </div>
+                <div id="paypalPaymentForm" style="display: none;">
+                    <button type="button" class="paypal-button" onclick="openPayPalModal()">
+                        <img src="https://cdn-icons-png.flaticon.com/512/174/174861.png" alt="PayPal">
+                        Pay with PayPal
+                    </button>
+                </div>
+                <h2>Shipping Information</h2>
+                <div class="form-group">
+                    <label for="street">Street Address</label>
+                    <input type="text" id="street" name="street" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">ZIP Code</label>
+                        <input type="text" id="zipCode" name="zipCode" required>
+                    </div>
+                </div>
+                <button type="submit" id="submitButton">Place Order</button>
+                <div id="error" class="error"></div>
+                <div id="success" class="success"></div>
+            </form>
+        </div>
+        <div class="cart-summary">
+            <h2>Order Summary</h2>
+            <div id="cartItems"></div>
+            <div id="cartTotal"></div>
+        </div>
+    </div>
+
+    <!-- PayPal Modal -->
+    <div id="paypalModal" class="paypal-modal">
+        <div class="paypal-modal-content">
+            <div class="paypal-modal-header">
+                <h3>PayPal Checkout</h3>
+                <button class="close-modal" onclick="closePayPalModal()">&times;</button>
+            </div>
+            <div class="paypal-modal-body">
+                <p>Test PayPal Account:</p>
+                <p>Email: test@example.com</p>
+                <p>Password: password123</p>
+            </div>
+            <div class="paypal-modal-footer">
+                <button class="submit-btn" onclick="simulatePayPalPayment()">Pay Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            window.location.href = '/login';
+        }
+
+        // Load cart
+        async function loadCart() {
+            try {
+                const response = await fetch(`${API_URL}/cart`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayCart(data);
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+            }
+        }
+
+        // Display cart
+        function displayCart(cart) {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            let total = 0;
+
+            cartItems.innerHTML = cart.items.map(item => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                return `
+                    <div class="cart-item">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>$${subtotal.toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('');
+
+            cartTotal.innerHTML = `
+                <div class="cart-item">
+                    <strong>Total</strong>
+                    <strong>$${total.toFixed(2)}</strong>
+                </div>
+            `;
+        }
+
+        // Format card number input
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            e.target.value = formattedValue;
+        });
+
+        // Format expiry date input
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        let selectedPaymentMethod = 'card';
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            const cardForm = document.getElementById('cardPaymentForm');
+            const paypalForm = document.getElementById('paypalPaymentForm');
+            const paymentMethods = document.querySelectorAll('.payment-method');
+
+            paymentMethods.forEach(pm => {
+                pm.classList.remove('selected');
+                if (pm.textContent.includes(method === 'card' ? 'Credit Card' : 'PayPal')) {
+                    pm.classList.add('selected');
+                }
+            });
+
+            if (method === 'card') {
+                cardForm.style.display = 'block';
+                paypalForm.style.display = 'none';
+            } else {
+                cardForm.style.display = 'none';
+                paypalForm.style.display = 'block';
+            }
+        }
+
+        function openPayPalModal() {
+            document.getElementById('paypalModal').style.display = 'block';
+        }
+
+        function closePayPalModal() {
+            document.getElementById('paypalModal').style.display = 'none';
+        }
+
+        function simulatePayPalPayment() {
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            // Simulate PayPal payment processing
+            setTimeout(() => {
+                closePayPalModal();
+                successDiv.textContent = 'Payment successful! Processing order...';
+                successDiv.style.display = 'block';
+                processOrder();
+            }, 1500);
+        }
+
+        // Update form submission to handle PayPal
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (selectedPaymentMethod === 'paypal') {
+                openPayPalModal();
+                return;
+            }
+
+            processOrder();
+        });
+
+        async function processOrder() {
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/cart`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load cart');
+                }
+
+                const cart = await response.json();
+                
+                // Create a mock order
+                const mockOrder = {
+                    id: Date.now().toString(),
+                    items: cart.items,
+                    total: cart.total,
+                    status: 'confirmed',
+                    createdAt: new Date().toISOString(),
+                    shippingAddress: {
+                        street: document.getElementById('street').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        zipCode: document.getElementById('zipCode').value
+                    },
+                    paymentMethod: selectedPaymentMethod
+                };
+
+                // Store the mock order
+                localStorage.setItem('lastOrder', JSON.stringify(mockOrder));
+                
+                // Show success message and redirect
+                successDiv.textContent = 'Order placed successfully! Redirecting...';
+                successDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    window.location.href = '/order-confirmation.html';
+                }, 1500);
+
+            } catch (error) {
+                errorDiv.textContent = 'An error occurred. Please try again.';
+                errorDiv.style.display = 'block';
+                console.error('Error:', error);
+            }
+        }
+
+        // Load cart on page load
+        loadCart();
+    </script>
+</body>
+</html> 

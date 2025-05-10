@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Strength Shop - Your Fitness Journey Starts Here</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #e74c3c;
+      --accent-color: #3498db;
+      --background-color: #f8f9fa;
+      --text-color: #2c3e50;
+      --border-radius: 8px;
+      --box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .header {
+      background-color: white;
+      box-shadow: var(--box-shadow);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      color: var(--secondary-color);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(44, 62, 80, 0.1);
+    }
+
+    .nav-link.logout {
+      color: var(--secondary-color);
+    }
+
+    .nav-link.logout:hover {
+      background-color: rgba(231, 76, 60, 0.1);
+    }
+
+    .cart-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--secondary-color);
+      color: white;
+      border-radius: 50%;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .main {
+      max-width: 1200px;
+      margin: 6rem auto 2rem;
+      padding: 0 1rem;
+    }
+
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      border-radius: var(--border-radius);
+      margin-bottom: 3rem;
+    }
+
+    .hero-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #c0392b;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 1.5rem;
+    }
+
+    .product-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-description {
+      color: #666;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--secondary-color);
+      margin-bottom: 1rem;
+    }
+
+    .add-to-cart {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-to-cart:hover {
+      background-color: #34495e;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1001;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 600px;
+      border-radius: var(--border-radius);
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .cart-items {
+      margin: 1rem 0;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-right: 1rem;
+      border-radius: var(--border-radius);
+    }
+
+    .cart-item-info {
+      flex-grow: 1;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-price {
+      color: var(--secondary-color);
+    }
+
+    .cart-item-quantity {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quantity-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .cart-total {
+      margin-top: 1rem;
+      text-align: right;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .checkout-btn {
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: var(--border-radius);
+      width: 100%;
+      margin-top: 1rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .footer {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 2rem 0;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .footer-section h3 {
+      margin-bottom: 1rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-section a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <nav class="nav-container">
+      <a href="/" class="logo">
+        <i class="fas fa-dumbbell"></i>
+        Strength Shop
+      </a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="#products" class="nav-link">Products</a>
+        <a href="#" class="nav-link cart-icon" onclick="openCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <a href="#" id="authLink" class="nav-link">Login</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main">
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Transform Your Fitness Journey</h1>
+        <p>Premium equipment and supplements for your home gym</p>
+        <button class="cta-button" onclick="scrollToProducts()">Shop Now</button>
+      </div>
+    </section>
+
+    <section id="products" class="products-grid">
+      <!-- Products will be dynamically loaded here -->
+    </section>
+  </main>
+
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCart()">&times;</span>
+      <h2>Your Cart</h2>
+      <div id="cartItems" class="cart-items">
+        <!-- Cart items will be dynamically loaded here -->
+      </div>
+      <div class="cart-total">
+        Total: $<span id="cartTotal">0.00</span>
+      </div>
+      <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About Us</h3>
+        <p>Your trusted source for premium fitness equipment and supplements.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="/login">Login</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Connect With Us</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Check for stored token on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      const authLink = document.getElementById('authLink');
+      
+      if (token && user) {
+        try {
+          // Verify token is still valid
+          const response = await fetch('/api/auth/me', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            // Token is valid, show logout
+            authLink.textContent = 'Logout';
+            authLink.classList.add('logout');
+            authLink.href = '#';
+            authLink.onclick = (e) => {
+              e.preventDefault();
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+              window.location.href = '/login';
+            };
+            loadCart();
+          } else {
+            // Token is invalid, clear storage and show login
+            console.log('Token invalid, clearing storage');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            authLink.textContent = 'Login';
+            authLink.classList.remove('logout');
+            authLink.href = '/login';
+          }
+        } catch (error) {
+          console.error('Error checking token:', error);
+          // Keep user logged in on network errors
+        }
+      } else {
+        // No token or user data, show login
+        authLink.textContent = 'Login';
+        authLink.classList.remove('logout');
+        authLink.href = '/login';
+      }
+    });
+
+    // Products data
+    const products = [
+      { id: '1', name: "Custom Workout Plan", price: 29.99, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb0ZrN2V8nwG0tbmKSOxiFORahWM7ZBWRj4w&s", description: "Tailored workout programs to match your goals." },
+      { id: '2', name: "Whey Protein Supplement", price: 49.99, img: "https://repfitness.com/cdn/shop/files/Protein_-_Lifestyle_-_6.jpg?v=1740694018&width=1445", description: "High-quality protein for muscle growth and recovery." },
+      { id: '3', name: "Multi-Function Home Gym", price: 399.99, img: "http://sfhealthtech.com/cdn/shop/articles/resize-How-to-Setup-Home-Gym.jpg?v=1598866727", description: "Your complete workout setup for home." },
+      { id: '4', name: "Resistance Bands Set", price: 19.99, img: "https://i5.walmartimages.com/seo/New-11-Piece-Resistance-Band-Set-Heavy-Duty-Yoga-Pilates-Abs-Exercise-Fitness-Workout-Bands_0371214a-7d43-4f19-ba27-ea3bd752f072.b81b750f2724c81c0989fdf12b0009a6.jpeg", description: "Portable and durable resistance band kit." },
+      { id: '5', name: "Kettlebell Weight Set", price: 89.99, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdF4TS0ozgjeygkw15crLC9FshFsT7ZkTUUQ&s", description: "Perfect for strength and cardio training." },
+      { id: '6', name: "Foam Roller Recovery Tool", price: 14.99, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu-vqByx1ONilq7NaGvbfdoZyP7O7BbDa4eQ&s", description: "Relieve tension and improve flexibility." }
+    ];
+
+    // Load products
+    function loadProducts() {
+      const productsGrid = document.querySelector('.products-grid');
+      productsGrid.innerHTML = products.map(product => `
+        <div class="product-card">
+          <img src="${product.img}" alt="${product.name}" class="product-image">
+          <div class="product-info">
+            <h3 class="product-name">${product.name}</h3>
+            <p class="product-description">${product.description}</p>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <button class="add-to-cart" onclick="addToCart('${product.id}')">Add to Cart</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Load cart
+    async function loadCart() {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch('/api/cart', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const cart = await response.json();
+          updateCartUI(cart);
+        }
+      } catch (error) {
+        console.error('Error loading cart:', error);
+      }
+    }
+
+    // Update cart UI
+    function updateCartUI(cart) {
+      const cartItems = document.getElementById('cartItems');
+      const cartCount = document.getElementById('cartCount');
+      const cartTotal = document.getElementById('cartTotal');
+
+      if (!cart || !cart.items) {
+        cartCount.textContent = '0';
+        cartTotal.textContent = '0.00';
+        cartItems.innerHTML = '<p>Your cart is empty</p>';
+        return;
+      }
+
+      cartCount.textContent = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+      cartTotal.textContent = cart.total.toFixed(2);
+
+      cartItems.innerHTML = cart.items.map(item => `
+        <div class="cart-item">
+          <img src="${products.find(p => p.id === item.productId)?.img || ''}" alt="${item.name}">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+            <div class="cart-item-quantity">
+              <button class="quantity-btn" onclick="updateQuantity('${item.productId}', ${item.quantity - 1})">-</button>
+              <span>${item.quantity}</span>
+              <button class="quantity-btn" onclick="updateQuantity('${item.productId}', ${item.quantity + 1})">+</button>
+            </div>
+          </div>
+          <button class="quantity-btn" onclick="removeFromCart('${item.productId}')">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Add to cart
+    async function addToCart(productId) {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('Please log in to add items to your cart');
+          window.location.href = '/login';
+          return;
+        }
+
+        const response = await fetch('/api/cart/items', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            productId,
+            quantity: 1
+          })
+        });
+
+        if (response.ok) {
+          const cart = await response.json();
+          updateCartUI(cart);
+          openCart();
+        } else if (response.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+        } else {
+          alert('Failed to add item to cart. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('Failed to add item to cart. Please try again.');
+      }
+    }
+
+    // Update quantity
+    async function updateQuantity(productId, quantity) {
+      if (quantity < 1) return;
+
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          window.location.href = '/login';
+          return;
+        }
+
+        const response = await fetch(`/api/cart/items/${productId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ quantity })
+        });
+
+        if (!response.ok) throw new Error('Failed to update quantity');
+
+        const cart = await response.json();
+        updateCartUI(cart);
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+      }
+    }
+
+    // Remove from cart
+    async function removeFromCart(productId) {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          window.location.href = '/login';
+          return;
+        }
+
+        const response = await fetch(`/api/cart/items/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to remove item');
+
+        const cart = await response.json();
+        updateCartUI(cart);
+      } catch (error) {
+        console.error('Error removing from cart:', error);
+      }
+    }
+
+    // Cart modal functions
+    function openCart() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login';
+        return;
+      }
+      document.getElementById('cartModal').style.display = 'block';
+      loadCart();
+    }
+
+    function closeCart() {
+      document.getElementById('cartModal').style.display = 'none';
+    }
+
+    // Checkout function
+    function checkout() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login';
+        return;
+      }
+      window.location.href = '/checkout';
+    }
+
+    // Scroll to products
+    function scrollToProducts() {
+      document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Initialize
+    loadProducts();
+  </script>
+
+</body>
+</html> 

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FitCode</title>
+  <style>
+    /* (Same styles as before) */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header, footer {
+      background-color: #1a1a1a;
+      color: #fff;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    .logo img {
+      height: 45px;
+      margin-right: 10px;
+    }
+    nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    #products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    .product {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    .product:hover {
+      transform: scale(1.02);
+    }
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .product h3 { margin-bottom: 10px; }
+    .product p {
+      font-size: 18px;
+      font-weight: bold;
+      color: #27ae60;
+    }
+    .product button {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .product button:hover {
+      background-color: #219150;
+    }
+
+    /* Modal */
+    #productModal, #cartModal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .modal-content input {
+      padding: 10px;
+      margin: 15px 0;
+      width: 60px;
+      font-size: 16px;
+    }
+
+    .cart-items {
+      text-align: left;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="fitcode-logo.png" alt="FitCode Logo">
+      <h1>FitCode</h1>
+    </div>
+    <nav>
+      <a onclick="closeAll()">Home</a>
+      <a onclick="closeAll()">Products</a>
+      <a onclick="showCart()">Cart</a>
+      <a onclick="closeAll()">Contact</a>
+      <a id="authLink" href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Featured Products</h2>
+    <section id="products"></section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 FitCode. All rights reserved.</p>
+  </footer>
+
+  <!-- Product Modal -->
+  <div id="productModal">
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="" style="width:100%; border-radius:10px;" />
+      <h3 id="modalName"></h3>
+      <p id="modalDescription" style="color: #555;"></p>
+      <p><strong id="modalPrice"></strong></p>
+      <input type="number" min="1" value="1" />
+      <br>
+      <button onclick="addToCart()">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cartModal">
+    <div class="modal-content">
+      <h3>Your Cart</h3>
+      <div class="cart-items" id="cartItems"></div>
+      <p><strong>Total: $<span id="cartTotal">0.00</span></strong></p>
+      <button onclick="closeAll()">Close</button>
+      <button onclick="goToCheckout()" style="margin-left:10px; background:#2980b9;">Checkout</button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    const products = [
+      { id: '1', name: "Custom Workout Plan", price: 29.99, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb0ZrN2V8nwG0tbmKSOxiFORahWM7ZBWRj4w&s", description: "Tailored workout programs to match your goals." },
+      { id: '2', name: "Whey Protein Supplement", price: 49.99, img: "https://repfitness.com/cdn/shop/files/Protein_-_Lifestyle_-_6.jpg?v=1740694018&width=1445", description: "High-quality protein for muscle growth and recovery." },
+      { id: '3', name: "Multi-Function Home Gym", price: 399.99, img: "http://sfhealthtech.com/cdn/shop/articles/resize-How-to-Setup-Home-Gym.jpg?v=1598866727", description: "Your complete workout setup for home." },
+      { id: '4', name: "Resistance Bands Set", price: 19.99, img: "https://i5.walmartimages.com/seo/New-11-Piece-Resistance-Band-Set-Heavy-Duty-Yoga-Pilates-Abs-Exercise-Fitness-Workout-Bands_0371214a-7d43-4f19-ba27-ea3bd752f072.b81b750f2724c81c0989fdf12b0009a6.jpeg", description: "Portable and durable resistance band kit." },
+      { id: '5', name: "Kettlebell Weight Set", price: 89.99, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdF4TS0ozgjeygkw15crLC9FshFsT7ZkTUUQ&s", description: "Perfect for strength and cardio training." },
+      { id: '6', name: "Foam Roller Recovery Tool", price: 14.99, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu-vqByx1ONilq7NaGvbfdoZyP7O7BbDa4eQ&s", description: "Relieve tension and improve flexibility." }
+    ];
+
+    const productContainer = document.getElementById("products");
+    let cart = [];
+
+    // Check authentication status
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      const authLink = document.getElementById('authLink');
+      if (token) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        authLink.textContent = `Welcome, ${user.name}`;
+        authLink.onclick = () => {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.reload();
+        };
+      }
+    }
+
+    // Load cart from API
+    async function loadCart() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const response = await fetch(`${API_URL}/cart`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          cart = data.items;
+        }
+      } catch (error) {
+        console.error('Error loading cart:', error);
+      }
+    }
+
+    // Initialize
+    checkAuth();
+    loadCart();
+
+    products.forEach((product) => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>$${product.price.toFixed(2)}</p>
+        <button onclick="showModal('${product.id}', '${product.name}', '${product.description}', ${product.price}, '${product.img}')">Add to Cart</button>
+      `;
+      productContainer.appendChild(div);
+    });
+
+    async function addToCart() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const modal = document.getElementById("productModal");
+      const productId = modal.dataset.productId;
+      const name = modal.dataset.name;
+      const price = parseFloat(modal.dataset.price);
+      const img = modal.dataset.img;
+      const qty = parseInt(modal.querySelector("input").value);
+
+      try {
+        const response = await fetch(`${API_URL}/cart/items`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            productId,
+            name,
+            price,
+            quantity: qty,
+            image: img
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          cart = data.items;
+          closeAll();
+        }
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      }
+    }
+
+    async function showCart() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/cart`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          cart = data.items;
+          const cartItemsContainer = document.getElementById("cartItems");
+          cartItemsContainer.innerHTML = "";
+          let total = 0;
+
+          cart.forEach(item => {
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
+            cartItemsContainer.innerHTML += `
+              <p><strong>${item.name}</strong> (x${item.quantity}) - $${subtotal.toFixed(2)}</p>
+            `;
+          });
+
+          document.getElementById("cartTotal").textContent = total.toFixed(2);
+          document.getElementById("cartModal").style.display = "block";
+        }
+      } catch (error) {
+        console.error('Error loading cart:', error);
+      }
+    }
+
+    function showModal(productId, name, description, price, img) {
+      document.getElementById("modalName").textContent = name;
+      document.getElementById("modalDescription").textContent = description;
+      document.getElementById("modalPrice").textContent = `$${price.toFixed(2)}`;
+      document.getElementById("modalImage").src = img;
+      document.getElementById("productModal").dataset.productId = productId;
+      document.getElementById("productModal").dataset.name = name;
+      document.getElementById("productModal").dataset.price = price;
+      document.getElementById("productModal").dataset.img = img;
+      document.getElementById("productModal").style.display = "block";
+    }
+
+    function closeAll() {
+      document.getElementById("productModal").style.display = "none";
+      document.getElementById("cartModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target === document.getElementById("productModal") || event.target === document.getElementById("cartModal")) {
+        closeAll();
+      }
+    };
+  </script>
+
+</body>
+</html>
+
+
