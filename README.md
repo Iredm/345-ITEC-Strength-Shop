@@ -2,6 +2,8 @@
 
 A full-stack e-commerce website for fitness equipment and supplements.
 
+_Last updated: May 10, 2024_
+
 ## Features
 
 - User authentication (login/register)
